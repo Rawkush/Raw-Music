@@ -1,12 +1,16 @@
 package rawmusic.gecdevelopers.com.rawmusic;
 
-import android.support.design.widget.TabLayout;
+import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.ViewModelProviders;
+import android.arch.persistence.room.Room;
+import android.content.SharedPreferences;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-
-import com.example.tabviewlibrary.TabView;
-import com.example.tabviewlibrary.model.FragmentModel;
+import android.support.design.widget.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,30 +19,45 @@ import rawmusic.gecdevelopers.com.rawmusic.fragments.ContentList;
 import rawmusic.gecdevelopers.com.rawmusic.fragments.CurrentMusic;
 import rawmusic.gecdevelopers.com.rawmusic.fragments.Playlist;
 import rawmusic.gecdevelopers.com.rawmusic.model.MusicModel;
+import rawmusic.gecdevelopers.com.rawmusic.model.SharedViewModel;
 
-public class MainActivity extends TabView {
+public class MainActivity extends AppCompatActivity  {
 
      public static List<MusicModel> list;
-
     private ViewPager viewPager;
+    public static MyAppDatabase myAppDatabase;
+
     private TabLayout tabs;
+    private String[] navLabels = {
+"My music","Currently Playing", "Playlist"    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        viewPager=findViewById(R.id.viewpager);
-        tabs = findViewById(R.id.tabs);
+        viewPager=findViewById(R.id.myviewpager);
+        tabs =  findViewById(R.id.tabs);
 
         list= new ArrayList<>();
         fetchMusic();
 
-        initViewpagerAndTablayout(viewPager,tabs);
-        addFragment(new FragmentModel(new ContentList(),"My Music"));
-        addFragment(new FragmentModel(new CurrentMusic(),"Cureently playing"));
-        addFragment(new FragmentModel(new Playlist(),"Playlist"));
+        myAppDatabase=Room.databaseBuilder(getApplicationContext(),MyAppDatabase.class,"userdb").allowMainThreadQueries().build();
+        for(MusicModel m:list){
+            myAppDatabase.myDao().addSong(m);
+        }
 
-
+        init();
     }
+
+    private void init(){
+
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFrag(new ContentList() , "My Music");
+        adapter.addFrag(new CurrentMusic(), "Play");
+        adapter.addFrag(new Playlist(), "PlayList");
+        viewPager.setAdapter(adapter);
+
+   }
 
     private  void fetchMusic(){
         list.add(new MusicModel(""+R.raw.want,"Want something"));
@@ -49,6 +68,34 @@ public class MainActivity extends TabView {
     }
 
 
+    private class ViewPagerAdapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+        public ViewPagerAdapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFrag(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
+    }
 
 
 

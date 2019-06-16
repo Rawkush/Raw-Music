@@ -1,6 +1,7 @@
 package rawmusic.gecdevelopers.com.rawmusic.fragments;
 
 
+import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -108,7 +109,6 @@ public class CurrentMusic extends Fragment {
     private boolean isPlaying = false;
     private static final String TAG = "MainActivity";
     static  int song=0;
-
     List<MusicModel> list= new ArrayList<>();
     View root;
 
@@ -135,19 +135,23 @@ public class CurrentMusic extends Fragment {
         fetchlist();
 
         //TODO: load previously played
-        prepareExoPlayerFromRawResourceUri(RawResourceDataSource.buildRawResourceUri(R.raw.chainsmoker));
+        if(list.isEmpty())
+            prepareExoPlayerFromRawResourceUri(RawResourceDataSource.buildRawResourceUri(R.raw.chainsmoker));
+        else
+            prepareExoPlayerFromRawResourceUri(RawResourceDataSource.buildRawResourceUri(Integer.parseInt(list.get(0).getData())));
 
     }
 
 
 
     private void fetchlist(){
+        list= MainActivity.myAppDatabase.myDao().getUser();
 
-        for(MusicModel m: MainActivity.list)
-            if(m.isInPlaylist())
-                list.add(m);
-
-
+        for(int i=0;i<list.size();i++){
+            if(!list.get(i).isInPlaylist()){
+                list.remove(i);
+            }
+        }
     }
 
 
@@ -195,12 +199,27 @@ public class CurrentMusic extends Fragment {
 
 
     private void initPrevButton(){
-        btnNext=root.findViewById(R.id.btnPrev);
+        btnPrev=root.findViewById(R.id.btnPrev);
         btnPrev.requestFocus();
         btnPrev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 exoPlayer.release();
+                song--;
+                if(song<=0) {
+                    if (list.isEmpty()) {
+                        setPlayPause(false);
+                        prepareExoPlayerFromRawResourceUri(RawResourceDataSource.buildRawResourceUri(R.raw.chainsmoker));
+                        setPlayPause(true);
+
+                        return;
+                    }
+                    song = list.size() - 1;
+                }
+                setPlayPause(false);
+
+                prepareExoPlayerFromRawResourceUri(RawResourceDataSource.buildRawResourceUri(Integer.parseInt(list.get(song).getData())));
+                    setPlayPause(true);
 
             }
         });
@@ -212,8 +231,19 @@ public class CurrentMusic extends Fragment {
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                exoPlayer.release();
-                prepareExoPlayerFromRawResourceUri(RawResourceDataSource.buildRawResourceUri(R.raw.tangled));
+                song++;
+                if(song>=list.size())
+                    song=0;
+
+                if (list.isEmpty()) {
+                    setPlayPause(false);
+                    prepareExoPlayerFromRawResourceUri(RawResourceDataSource.buildRawResourceUri(R.raw.chainsmoker));
+                    setPlayPause(true);
+
+                    return;
+                }
+                setPlayPause(false);
+                prepareExoPlayerFromRawResourceUri(RawResourceDataSource.buildRawResourceUri(Integer.parseInt(list.get(song).getData())));
                 setPlayPause(true);
             }
         });
@@ -325,5 +355,7 @@ public class CurrentMusic extends Fragment {
         seekPlayerProgress.setMax((int) exoPlayer.getDuration()/1000);
 
     }
+
+
 
 }

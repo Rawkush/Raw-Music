@@ -1,12 +1,25 @@
 package rawmusic.gecdevelopers.com.rawmusic.model;
 
+import android.arch.persistence.room.ColumnInfo;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
+
+
+@Entity (tableName = "user")
 public class MusicModel {
 
-
+    @ColumnInfo(name = "data")
     private String data;
+
+    @NonNull
+    @PrimaryKey
     private String title;
+
     private String album;
     private String artist;
+
+    @ColumnInfo(name = "isInPlayList")
     private boolean inPlaylist=false;
 
     public boolean isInPlaylist() {
@@ -17,12 +30,6 @@ public class MusicModel {
         this.inPlaylist = inPlaylist;
     }
 
-    public MusicModel(String data, String title, String album, String artist) {
-        this.data = data;
-        this.title = title;
-        this.album = album;
-        this.artist = artist;
-    }
 
     public MusicModel(String data, String title) {
         this.data = data;

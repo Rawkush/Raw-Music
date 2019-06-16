@@ -1,7 +1,9 @@
 package rawmusic.gecdevelopers.com.rawmusic.adapters;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,11 +17,11 @@ import java.util.List;
 import rawmusic.gecdevelopers.com.rawmusic.MainActivity;
 import rawmusic.gecdevelopers.com.rawmusic.R;
 import rawmusic.gecdevelopers.com.rawmusic.model.MusicModel;
+import rawmusic.gecdevelopers.com.rawmusic.model.SharedViewModel;
 
 public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ContentViewHolder> {
 
     private Context mCtx;
-
     List<MusicModel> list= Collections.EMPTY_LIST;
 
     public ContentAdapter(Context mCtx, List<MusicModel> list) {
@@ -48,12 +50,8 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ContentV
                 list.remove(holder.getAdapterPosition());
                 notifyDataSetChanged();
                 //TODO add to playlist
-
-                for(MusicModel m: MainActivity.list){
-                    if(m.getTitle().equals(musicModel.getTitle())){
-                        m.setInPlaylist(true);
-                    }
-                }
+                musicModel.setInPlaylist(true);
+                MainActivity.myAppDatabase.myDao().updateSong(musicModel);
 
             }
         });
