@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,7 @@ import rawmusic.gecdevelopers.com.rawmusic.model.MusicModel;
 public class ContentList extends Fragment implements FragmentLifecycle {
     List<MusicModel> list;
 
+    ImageView imageView;
     ContentAdapter adapter;
     RecyclerView recyclerView;
     @Override
@@ -38,7 +40,6 @@ public class ContentList extends Fragment implements FragmentLifecycle {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         list=new ArrayList<>();
-
         recyclerView= view.findViewById(R.id.recyclerview);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -59,6 +60,7 @@ public class ContentList extends Fragment implements FragmentLifecycle {
                 i--;
             }
         }
+
 
     }
 

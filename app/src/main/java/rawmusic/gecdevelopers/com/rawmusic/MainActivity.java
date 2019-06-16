@@ -89,7 +89,9 @@ public class MainActivity extends AppCompatActivity  {
         list.add(new MusicModel(""+R.raw.tangled,"tangled"));
         list.add(new MusicModel(""+R.raw.treat,"treat me like"));
         list.add(new MusicModel(""+R.raw.chainsmoker,"chain smoker"));
-        list.add(new MusicModel(""+R.raw.something,"something"));
+        list.add(new MusicModel(""+R.raw.despacito,"despacito"));
+        list.add(new MusicModel(""+R.raw.lazy,"Lazy song"));
+        list.add(new MusicModel(""+R.raw.marry,"Marry"));
     }
 
 

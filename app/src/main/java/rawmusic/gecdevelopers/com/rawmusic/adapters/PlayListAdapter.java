@@ -50,7 +50,6 @@ public class PlayListAdapter extends  RecyclerView.Adapter<PlayListAdapter.PlayL
                 list.remove(holder.getAdapterPosition());
                 notifyDataSetChanged();
                 //TODO add to playlist
-
                 musicModel.setInPlaylist(false);
                 MainActivity.myAppDatabase.myDao().updateSong(musicModel);
 

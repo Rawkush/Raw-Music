@@ -58,7 +58,6 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ContentV
             }
         });
 
-
     }
 
     @Override
@@ -78,7 +77,6 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ContentV
             imageView=itemView.findViewById(R.id.image_view);
             title = (TextView) itemView.findViewById(R.id.title);
             btnAddToPlaylist= itemView.findViewById(R.id.add_to_playlist);
-
         }
 
     }

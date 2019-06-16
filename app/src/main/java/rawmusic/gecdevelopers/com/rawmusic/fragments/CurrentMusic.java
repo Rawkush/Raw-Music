@@ -3,6 +3,9 @@ package rawmusic.gecdevelopers.com.rawmusic.fragments;
 
 import android.arch.lifecycle.Lifecycle;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,6 +17,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -116,8 +121,7 @@ public class CurrentMusic extends Fragment implements FragmentLifecycle {
     List<MusicModel> list= new ArrayList<>();
     View root;
     private TextView tvTitle;
-
-
+    ImageView imageView;
 
     public CurrentMusic() {
         // Required empty public constructor
@@ -138,8 +142,8 @@ public class CurrentMusic extends Fragment implements FragmentLifecycle {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         tvTitle = view.findViewById(R.id.title);
+        imageView=view.findViewById(R.id.image_view);
 
         fetchlist();
 
@@ -193,9 +197,35 @@ public class CurrentMusic extends Fragment implements FragmentLifecycle {
 
 
         exoPlayer.prepare(audioSource);
+
+     //   loadThumbs(rawResourceDataSource.getUri().getPath());
+
         initMediaControls();
     }
 
+
+    private void loadThumbs(String uri){
+        android.media.MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+        mmr.setDataSource(uri);
+
+        byte [] data = mmr.getEmbeddedPicture();
+        //coverart is an Imageview object
+
+        // convert the byte array to a bitmap
+        if(data != null)
+        {
+            Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+            imageView.setImageBitmap(bitmap); //associated cover art in bitmap
+        }
+        else
+        {
+            imageView.setImageResource(R.drawable.music); //any default cover resourse folder
+        }
+
+        imageView.setAdjustViewBounds(true);
+        imageView.setLayoutParams(new LinearLayout.LayoutParams(500, 500));
+
+    }
 
     private void initMediaControls() {
         initPlayButton();
