@@ -55,8 +55,9 @@ public class MainActivity extends AppCompatActivity  {
         adapter.addFrag(new CurrentMusic(), "Play");
         adapter.addFrag(new Playlist(), "PlayList");
         viewPager.setAdapter(adapter);
+        tabs.setupWithViewPager(viewPager);
 
-   }
+    }
 
     private  void fetchMusic(){
         list.add(new MusicModel(""+R.raw.want,"Want something"));
