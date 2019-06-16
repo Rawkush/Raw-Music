@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,8 +20,11 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ContentV
 
     private Context mCtx;
 
-    public ContentAdapter(Context mCtx) {
+    List<MusicModel> list= Collections.EMPTY_LIST;
+
+    public ContentAdapter(Context mCtx, List<MusicModel> list) {
         this.mCtx = mCtx;
+        this.list=list;
     }
 
     @NonNull
@@ -34,16 +36,24 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ContentV
 
     @Override
     public void onBindViewHolder(@NonNull final ContentViewHolder holder, final int position) {
-        holder.title.setText(MainActivity.list.get(position).getTitle());
 
-        final MusicModel musicModel=MainActivity.list.get(position);
+
+        final MusicModel musicModel=list.get(position);
+        holder.title.setText(musicModel.getTitle());
+
         holder.btnAddToPlaylist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                MainActivity.list.get(position).setInPlaylist(true);
-                Toast.makeText(mCtx,"sdad",Toast.LENGTH_SHORT).show();
+                list.remove(holder.getAdapterPosition());
                 notifyDataSetChanged();
+                //TODO add to playlist
+
+                for(MusicModel m: MainActivity.list){
+                    if(m.getTitle().equals(musicModel.getTitle())){
+                        m.setInPlaylist(true);
+                    }
+                }
 
             }
         });
@@ -53,7 +63,7 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ContentV
 
     @Override
     public int getItemCount() {
-        return MainActivity.list.size();
+        return list.size();
     }
 
     class ContentViewHolder extends RecyclerView.ViewHolder  {

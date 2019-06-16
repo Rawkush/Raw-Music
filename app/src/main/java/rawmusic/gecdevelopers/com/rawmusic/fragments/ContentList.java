@@ -11,14 +11,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import rawmusic.gecdevelopers.com.rawmusic.MainActivity;
 import rawmusic.gecdevelopers.com.rawmusic.R;
 import rawmusic.gecdevelopers.com.rawmusic.adapters.ContentAdapter;
 
 public class ContentList extends Fragment {
 
 
-    RecyclerView recyclerView;
     ContentAdapter adapter;
+    RecyclerView recyclerView;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -35,7 +36,7 @@ public class ContentList extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        adapter= new ContentAdapter(getContext());
+        adapter= new ContentAdapter(getContext(), MainActivity.list);
         recyclerView.setAdapter(adapter);
 
     }
