@@ -1,6 +1,7 @@
 package rawmusic.gecdevelopers.com.rawmusic.fragments;
 
 
+import android.arch.lifecycle.Lifecycle;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
@@ -38,6 +40,7 @@ import java.util.Formatter;
 import java.util.List;
 import java.util.Locale;
 
+import rawmusic.gecdevelopers.com.rawmusic.FragmentLifecycle;
 import rawmusic.gecdevelopers.com.rawmusic.MainActivity;
 import rawmusic.gecdevelopers.com.rawmusic.R;
 import rawmusic.gecdevelopers.com.rawmusic.model.MusicModel;
@@ -46,7 +49,7 @@ import rawmusic.gecdevelopers.com.rawmusic.model.MusicModel;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class CurrentMusic extends Fragment {
+public class CurrentMusic extends Fragment implements FragmentLifecycle {
 
     private SimpleExoPlayer exoPlayer;
     private ExoPlayer.EventListener eventListener = new ExoPlayer.EventListener() {
@@ -111,6 +114,9 @@ public class CurrentMusic extends Fragment {
     static  int song=0;
     List<MusicModel> list= new ArrayList<>();
     View root;
+    private TextView tvTitle;
+
+
 
     public CurrentMusic() {
         // Required empty public constructor
@@ -132,14 +138,15 @@ public class CurrentMusic extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        tvTitle=view.findViewById(R.id.title);
+
         fetchlist();
 
         //TODO: load previously played
-        if(list.isEmpty())
-            prepareExoPlayerFromRawResourceUri(RawResourceDataSource.buildRawResourceUri(R.raw.chainsmoker));
-        else
+        if(!list.isEmpty()) {
             prepareExoPlayerFromRawResourceUri(RawResourceDataSource.buildRawResourceUri(Integer.parseInt(list.get(0).getData())));
-
+            tvTitle.setText(list.get(0).getTitle());
+        }
     }
 
 
@@ -148,8 +155,6 @@ public class CurrentMusic extends Fragment {
         list= MainActivity.myAppDatabase.myDao().getUser();
         Log.e("mylisdy",""+list);
         for(int i=0;i<list.size();i++){
-
-            Log.d("myl curr", list.get(i).getTitle() + list.get(i).isInPlaylist()) ;
 
             if(!list.get(i).isInPlaylist()){
                 list.remove(i);
@@ -208,16 +213,13 @@ public class CurrentMusic extends Fragment {
                 song--;
                 if(song<=0) {
                     if (list.isEmpty()) {
-                        setPlayPause(false);
-                        prepareExoPlayerFromRawResourceUri(RawResourceDataSource.buildRawResourceUri(R.raw.chainsmoker));
-                        setPlayPause(true);
-
                         return;
                     }
                     song = list.size() - 1;
                 }
                 setPlayPause(false);
 
+                tvTitle.setText(list.get(song).getTitle());
                 prepareExoPlayerFromRawResourceUri(RawResourceDataSource.buildRawResourceUri(Integer.parseInt(list.get(song).getData())));
                     setPlayPause(true);
 
@@ -236,13 +238,10 @@ public class CurrentMusic extends Fragment {
                     song=0;
 
                 if (list.isEmpty()) {
-                    setPlayPause(false);
-                    prepareExoPlayerFromRawResourceUri(RawResourceDataSource.buildRawResourceUri(R.raw.chainsmoker));
-                    setPlayPause(true);
-
                     return;
                 }
                 setPlayPause(false);
+                tvTitle.setText(list.get(song).getTitle());
                 prepareExoPlayerFromRawResourceUri(RawResourceDataSource.buildRawResourceUri(Integer.parseInt(list.get(song).getData())));
                 setPlayPause(true);
             }
@@ -357,5 +356,14 @@ public class CurrentMusic extends Fragment {
     }
 
 
+    @Override
+    public void onPauseFragment() {
 
+    }
+
+    @Override
+    public void onResumeFragment() {
+        fetchlist();
+
+    }
 }

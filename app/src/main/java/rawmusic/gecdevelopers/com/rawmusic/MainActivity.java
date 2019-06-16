@@ -50,11 +50,36 @@ public class MainActivity extends AppCompatActivity  {
 
     private void init(){
 
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        final ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         adapter.addFrag(new ContentList() , "My Music");
         adapter.addFrag(new CurrentMusic(), "Play");
         adapter.addFrag(new Playlist(), "PlayList");
         viewPager.setAdapter(adapter);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+
+            int currentPosition=0;
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
+
+            }
+
+            @Override
+            public void onPageSelected(int newPosition) {
+                FragmentLifecycle fragmentToShow = (FragmentLifecycle)adapter.getItem(newPosition);
+                fragmentToShow.onResumeFragment();
+
+                FragmentLifecycle fragmentToHide = (FragmentLifecycle)adapter.getItem(currentPosition);
+                fragmentToHide.onPauseFragment();
+
+                currentPosition = newPosition;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
+        viewPager.setOffscreenPageLimit(0);
         tabs.setupWithViewPager(viewPager);
 
     }

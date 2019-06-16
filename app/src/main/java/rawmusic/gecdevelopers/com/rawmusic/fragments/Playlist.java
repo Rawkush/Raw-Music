@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import rawmusic.gecdevelopers.com.rawmusic.FragmentLifecycle;
 import rawmusic.gecdevelopers.com.rawmusic.MainActivity;
 import rawmusic.gecdevelopers.com.rawmusic.R;
 import rawmusic.gecdevelopers.com.rawmusic.adapters.ContentAdapter;
@@ -67,4 +68,5 @@ public class Playlist extends Fragment {
 
 
     }
+
 }
