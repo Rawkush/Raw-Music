@@ -26,7 +26,7 @@ import rawmusic.gecdevelopers.com.rawmusic.model.MusicModel;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class Playlist extends Fragment {
+public class Playlist extends Fragment implements FragmentLifecycle {
 
 
     PlayListAdapter adapter;
@@ -69,4 +69,13 @@ public class Playlist extends Fragment {
 
     }
 
+    @Override
+    public void onPauseFragment() {
+
+    }
+
+    @Override
+    public void onResumeFragment() {
+
+    }
 }

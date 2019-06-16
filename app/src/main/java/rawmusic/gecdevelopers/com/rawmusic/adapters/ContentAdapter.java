@@ -7,7 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.Collections;
 import java.util.List;
@@ -39,7 +42,7 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ContentV
 
         final MusicModel musicModel=list.get(position);
         holder.title.setText(musicModel.getTitle());
-
+        Glide.with(mCtx).load(R.drawable.music).into(holder.imageView);
         holder.btnAddToPlaylist.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,12 +69,13 @@ public class ContentAdapter extends RecyclerView.Adapter<ContentAdapter.ContentV
     class ContentViewHolder extends RecyclerView.ViewHolder  {
 
         TextView title;
-
+        ImageView imageView;
         Button btnAddToPlaylist;
+
 
         public ContentViewHolder(@NonNull View itemView) {
             super(itemView);
-
+            imageView=itemView.findViewById(R.id.image_view);
             title = (TextView) itemView.findViewById(R.id.title);
             btnAddToPlaylist= itemView.findViewById(R.id.add_to_playlist);
 

@@ -138,14 +138,17 @@ public class CurrentMusic extends Fragment implements FragmentLifecycle {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        tvTitle=view.findViewById(R.id.title);
+        tvTitle = view.findViewById(R.id.title);
 
         fetchlist();
 
         //TODO: load previously played
-        if(!list.isEmpty()) {
+        if (!list.isEmpty()) {
             prepareExoPlayerFromRawResourceUri(RawResourceDataSource.buildRawResourceUri(Integer.parseInt(list.get(0).getData())));
             tvTitle.setText(list.get(0).getTitle());
+        } else {
+            prepareExoPlayerFromRawResourceUri(RawResourceDataSource.buildRawResourceUri(R.raw.chainsmoker));
+            tvTitle.setText("chain smoker");
         }
     }
 

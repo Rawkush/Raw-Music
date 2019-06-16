@@ -51,18 +51,15 @@ public class ContentList extends Fragment implements FragmentLifecycle {
 
 
     private void updateList(){
-        List<MusicModel> tempList= MainActivity.myAppDatabase.myDao().getUser();
-
-        Log.e("mylisdy",""+list);
+       list= MainActivity.myAppDatabase.myDao().getUser();
 
         for(int i=0;i<list.size();i++){
             if(list.get(i).isInPlaylist()){
                 list.remove(i);
+                i--;
             }
         }
 
-        list.clear();
-        list.addAll(tempList);
     }
 
 
@@ -74,7 +71,6 @@ public class ContentList extends Fragment implements FragmentLifecycle {
     @Override
     public void onResumeFragment() {
 
-        updateList();
-        adapter.notifyDataSetChanged();
+
     }
 }
