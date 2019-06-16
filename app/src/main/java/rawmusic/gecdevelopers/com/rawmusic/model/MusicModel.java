@@ -20,7 +20,7 @@ public class MusicModel {
     private String artist;
 
     @ColumnInfo(name = "isInPlayList")
-    private boolean inPlaylist=false;
+    private boolean inPlaylist;
 
     public boolean isInPlaylist() {
         return inPlaylist;
@@ -34,6 +34,7 @@ public class MusicModel {
     public MusicModel(String data, String title) {
         this.data = data;
         this.title = title;
+        inPlaylist=false;
     }
 
     public String getData() {

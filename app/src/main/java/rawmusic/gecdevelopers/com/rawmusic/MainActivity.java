@@ -1,9 +1,6 @@
 package rawmusic.gecdevelopers.com.rawmusic;
 
-import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.ViewModelProviders;
 import android.arch.persistence.room.Room;
-import android.content.SharedPreferences;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -11,6 +8,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,11 +17,10 @@ import rawmusic.gecdevelopers.com.rawmusic.fragments.ContentList;
 import rawmusic.gecdevelopers.com.rawmusic.fragments.CurrentMusic;
 import rawmusic.gecdevelopers.com.rawmusic.fragments.Playlist;
 import rawmusic.gecdevelopers.com.rawmusic.model.MusicModel;
-import rawmusic.gecdevelopers.com.rawmusic.model.SharedViewModel;
 
 public class MainActivity extends AppCompatActivity  {
 
-     public static List<MusicModel> list;
+    public  List<MusicModel> list;
     private ViewPager viewPager;
     public static MyAppDatabase myAppDatabase;
 
@@ -42,8 +39,10 @@ public class MainActivity extends AppCompatActivity  {
         fetchMusic();
 
         myAppDatabase=Room.databaseBuilder(getApplicationContext(),MyAppDatabase.class,"userdb").allowMainThreadQueries().build();
+
         for(MusicModel m:list){
             myAppDatabase.myDao().addSong(m);
+            Log.d("myl", m.getTitle() + m.isInPlaylist()) ;
         }
 
         init();

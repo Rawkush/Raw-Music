@@ -146,10 +146,14 @@ public class CurrentMusic extends Fragment {
 
     private void fetchlist(){
         list= MainActivity.myAppDatabase.myDao().getUser();
-
+        Log.e("mylisdy",""+list);
         for(int i=0;i<list.size();i++){
+
+            Log.d("myl curr", list.get(i).getTitle() + list.get(i).isInPlaylist()) ;
+
             if(!list.get(i).isInPlaylist()){
                 list.remove(i);
+                i--;
             }
         }
     }
@@ -182,10 +186,6 @@ public class CurrentMusic extends Fragment {
         exoPlayer.prepare(audioSource);
         initMediaControls();
     }
-
-
-
-
 
 
     private void initMediaControls() {

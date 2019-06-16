@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.util.Collections;
 import java.util.List;
 
+import rawmusic.gecdevelopers.com.rawmusic.MainActivity;
 import rawmusic.gecdevelopers.com.rawmusic.R;
 import rawmusic.gecdevelopers.com.rawmusic.model.MusicModel;
 
@@ -29,12 +30,28 @@ public class PlayListAdapter extends  RecyclerView.Adapter<PlayListAdapter.PlayL
     @NonNull
     @Override
     public PlayListViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view = LayoutInflater.from(mCtx).inflate(R.layout.content_item, viewGroup,false);
+        View view = LayoutInflater.from(mCtx).inflate(R.layout.playlist_item, viewGroup,false);
         return new PlayListAdapter.PlayListViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PlayListViewHolder playListViewHolder, int i) {
+    public void onBindViewHolder(@NonNull final PlayListViewHolder holder, final int position) {
+        final MusicModel musicModel=list.get(position);
+        holder.title.setText(musicModel.getTitle());
+
+        holder.btnRemove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                list.remove(holder.getAdapterPosition());
+                notifyDataSetChanged();
+                //TODO add to playlist
+
+                musicModel.setInPlaylist(false);
+                MainActivity.myAppDatabase.myDao().updateSong(musicModel);
+
+            }
+        });
 
     }
 
@@ -47,14 +64,12 @@ public class PlayListAdapter extends  RecyclerView.Adapter<PlayListAdapter.PlayL
     class PlayListViewHolder extends RecyclerView.ViewHolder  {
 
         TextView title;
-
-        Button btnAddToPlaylist;
+        Button btnRemove;
 
         public PlayListViewHolder(@NonNull View itemView) {
             super(itemView);
             title = (TextView) itemView.findViewById(R.id.title);
-            btnAddToPlaylist= itemView.findViewById(R.id.add_to_playlist);
-
+            btnRemove= itemView.findViewById(R.id.remove_from_playlist);
         }
 
     }
