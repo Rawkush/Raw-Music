@@ -17,7 +17,6 @@ import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -78,6 +77,8 @@ public class CurrentMusic extends Fragment implements FragmentLifecycle {
                     //Stop playback and return to start position
                     setPlayPause(false);
                     exoPlayer.seekTo(0);
+                    playNext();
+
                     break;
                 case ExoPlayer.STATE_READY:
                     Log.i(TAG,"ExoPlayer ready! pos: "+exoPlayer.getCurrentPosition()
@@ -212,19 +213,7 @@ public class CurrentMusic extends Fragment implements FragmentLifecycle {
         btnPrev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                exoPlayer.release();
-                song--;
-                if(song<=0) {
-                    if (list.isEmpty()) {
-                        return;
-                    }
-                    song = list.size() - 1;
-                }
-                setPlayPause(false);
-
-                tvTitle.setText(list.get(song).getTitle());
-                prepareExoPlayerFromRawResourceUri(RawResourceDataSource.buildRawResourceUri(Integer.parseInt(list.get(song).getData())));
-                    setPlayPause(true);
+                playPrev();
 
             }
         });
@@ -236,21 +225,41 @@ public class CurrentMusic extends Fragment implements FragmentLifecycle {
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                song++;
-                if(song>=list.size())
-                    song=0;
-
-                if (list.isEmpty()) {
-                    return;
-                }
-                setPlayPause(false);
-                tvTitle.setText(list.get(song).getTitle());
-                prepareExoPlayerFromRawResourceUri(RawResourceDataSource.buildRawResourceUri(Integer.parseInt(list.get(song).getData())));
-                setPlayPause(true);
+               playNext();
             }
         });
     }
 
+
+    private void playNext(){
+        song++;
+        if(song>=list.size())
+            song=0;
+
+        if (list.isEmpty()) {
+            return;
+        }
+        setPlayPause(false);
+        tvTitle.setText(list.get(song).getTitle());
+        prepareExoPlayerFromRawResourceUri(RawResourceDataSource.buildRawResourceUri(Integer.parseInt(list.get(song).getData())));
+        setPlayPause(true);    }
+
+
+    private void playPrev(){
+        exoPlayer.release();
+        song--;
+        if(song<=0) {
+            if (list.isEmpty()) {
+                return;
+            }
+            song = list.size() - 1;
+        }
+        setPlayPause(false);
+
+        tvTitle.setText(list.get(song).getTitle());
+        prepareExoPlayerFromRawResourceUri(RawResourceDataSource.buildRawResourceUri(Integer.parseInt(list.get(song).getData())));
+        setPlayPause(true);
+    }
 
     private void initPlayButton() {
         btnPlay = (ImageButton) root.findViewById(R.id.btnPlay);
@@ -319,8 +328,9 @@ public class CurrentMusic extends Fragment implements FragmentLifecycle {
                     seekPlayerProgress.setProgress(mCurrentPosition);
                     txtCurrentTime.setText(stringForTime((int)exoPlayer.getCurrentPosition()));
                     txtEndTime.setText(stringForTime((int)exoPlayer.getDuration()));
-
                     handler.postDelayed(this, 1000);
+
+
                 }
             }
         });
